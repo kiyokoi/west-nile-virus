@@ -40,3 +40,17 @@ spray_locations = spray[['Longitude', 'Latitude']].drop_duplicates().values
 locations = traps[['Longitude', 'Latitude']].drop_duplicates().values
 plt.scatter(spray_locations[:,0], spray_locations[:,1], marker='o', color = 'c')
 plt.scatter(locations[:,0], locations[:,1], marker='x')
+
+# Data Exploration
+# Exclude redundant columns from the training data
+features_drop = ['Address', 'Block', 'Street', 'AddressNumberAndStreet', 'AddressAccuracy']
+features = data.drop(features_drop, axis=1)
+
+# Check the statistic of the training data
+display(features.describe())
+display(features.Species.unique())
+
+# Check data types
+display(features.dtypes)
+display(spray.dtypes)
+display(weather.dtypes)
