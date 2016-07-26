@@ -87,3 +87,10 @@ plt.scatter(spray_locations[:,0], spray_locations[:,1], marker='x', color = 'y')
 plt.scatter(locations[:,0], locations[:,1], marker='o')
 for i in range(2):
     plt.plot(stations[i,0], stations[i,1], '^', color='r')
+
+# Convert Date to datetime format and add Year & Month columns
+files = [train, spray, weather]
+for file in files:
+    file['Date'] = pd.to_datetime(file['Date'], format='%Y-%m-%d')
+    file['Year'] = file['Date'].dt.year
+    file['Month'] = file['Date'].dt.month
