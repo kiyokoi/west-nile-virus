@@ -54,3 +54,34 @@ display(train.Species.unique())
 display(train.dtypes)
 display(spray.dtypes)
 display(weather.dtypes)
+
+# Tidy up the weather data
+# Count the number of missing data by column
+for column in weather.columns:
+    print column, weather[column].isnull().values.sum()
+
+# Count the number of missing data by station
+print 1472 - weather.groupby('Station').count()
+
+# Drop columns with high count of missing data in both stations and unimputable Station2 data
+weather_drop = ['Water1', 'CodeSum', 'Depart', 'SnowFall', 'Depth']
+weather = weather.drop(weather_drop, axis=1)
+
+# Impute Station2 data with Station1 data for sunrise & sunset
+weather_ffill = ['Sunrise', 'Sunset']
+for column in weather_ffill:
+    weather[column].fillna(method='ffill', inplace=True)
+
+# Impute 'T' (trace) precipitation with zero
+weather.replace('  T', 0.0, inplace=True)
+# Convert PrecipTotal to real number
+weather['PrecipTotal'] = weather['PrecipTotal'].astype(float)
+
+# Impute missing data with median for: Tavg, WetBulb, Heat, Cool, PrecipTotal, StnPressure, SeaLevel, AvgSpeed
+weather_impute = ['Tavg', 'WetBulb', 'Heat', 'Cool', 'PrecipTotal', 'StnPressure', 'SeaLevel', 'AvgSpeed']
+# Data statistics before imputation
+display(weather[weather_impute].describe())
+for col in weather_impute:
+    median = weather[col].median()  
+# Data statistics after imputation
+display(weather[weather_impute].describe())
