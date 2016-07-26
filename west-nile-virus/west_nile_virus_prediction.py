@@ -11,12 +11,12 @@ import seaborn as sns
 from IPython.display import display
 
 # Load data
-data = pd.read_csv('../input/train.csv')
+train = pd.read_csv('../input/train.csv')
 spray = pd.read_csv('../input/spray.csv')
 weather = pd.read_csv('../input/weather.csv', na_values=['M', '-', ' '])
 
 # Get to know what's in the dataset
-display(data.head(), data.shape)
+display(train.head(), train.shape)
 display(spray.head(), spray.shape)
 display(weather.columns.values, weather.shape)
 
@@ -43,14 +43,14 @@ plt.scatter(locations[:,0], locations[:,1], marker='x')
 
 # Data Exploration
 # Exclude redundant columns from the training data
-features_drop = ['Address', 'Block', 'Street', 'AddressNumberAndStreet', 'AddressAccuracy']
-features = data.drop(features_drop, axis=1)
+train_drop = ['Address', 'Block', 'Street', 'AddressNumberAndStreet', 'AddressAccuracy']
+train = train.drop(train_drop, axis=1)
 
 # Check the statistic of the training data
-display(features.describe())
-display(features.Species.unique())
+display(train.describe())
+display(train.Species.unique())
 
 # Check data types
-display(features.dtypes)
+display(train.dtypes)
 display(spray.dtypes)
 display(weather.dtypes)
