@@ -57,9 +57,15 @@ weather_impute = ['Tavg', 'WetBulb', 'Heat', 'Cool', 'PrecipTotal', 'StnPressure
 # Data statistics before imputation
 display(weather[weather_impute].describe())
 for col in weather_impute:
-    median = weather[col].median()  
+    median = weather[col].median()
+    weather.loc[weather[col].isnull()] = median
+    
 # Data statistics after imputation
 display(weather[weather_impute].describe())
+
+# Verify all missing data has been accounted for
+for column in weather.columns:
+    print column, weather[column].isnull().values.sum()
 
 # First 5 rows of the final weather data
 display(weather.head())
@@ -94,3 +100,4 @@ for file in files:
     file['Date'] = pd.to_datetime(file['Date'], format='%Y-%m-%d')
     file['Year'] = file['Date'].dt.year
     file['Month'] = file['Date'].dt.month
+    file['Day'] = file['Date'].dt.day
