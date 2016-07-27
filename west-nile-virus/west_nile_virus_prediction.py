@@ -101,3 +101,23 @@ for file in files:
     file['Year'] = file['Date'].dt.year
     file['Month'] = file['Date'].dt.month
     file['Day'] = file['Date'].dt.day
+    
+# Determine percentage of positive mosquitos per category
+groups = ['Year', 'Month', 'Species', 'Trap']
+for i in range(len(groups)):
+    group = train.groupby([groups[i]])
+    percent_positive_per_group = dict(group['WnvPresent'].sum() / group['WnvPresent'].count() * 100.0)
+    plt.bar(range(len(percent_positive_per_group)), percent_positive_per_group.values(), align = 'center')
+    plt.xticks(range(len(percent_positive_per_group)), percent_positive_per_group.keys())
+    locs, labels = plt.xticks()
+    plt.setp(labels, rotation = 70)
+    plt.show()
+
+# Determine spray frequency per year
+year = spray.groupby(sorted(['Year', 'Month']))
+spray_freq = dict(year['Time'].count())
+plt.bar(range(len(spray_freq)), spray_freq.values(), align = 'center')
+plt.xticks(range(len(spray_freq)), spray_freq.keys())
+locs, labels = plt.xticks()
+plt.setp(labels, rotation = 70)
+plt.show()
