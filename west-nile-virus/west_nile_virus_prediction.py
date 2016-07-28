@@ -121,3 +121,22 @@ plt.xticks(range(len(spray_freq)), spray_freq.keys())
 locs, labels = plt.xticks()
 plt.setp(labels, rotation = 70)
 plt.show()
+
+### Data Processing
+# Assign weather station association to the trap
+s1 = (41.995, -87.933)
+s2 = (41.786, -87.752)
+
+# from https://github.com/geopy/geopy
+from geopy.distance import great_circle
+for i, row in train[['Latitude', 'Longitude']].iterrows():
+    coord = (row[0], row[1])       
+    distance1 = great_circle(coord, s1).miles
+    distance2 = great_circle(coord, s2).miles
+    if distance1 < distance2:    
+        train.set_value(i, 'Station', 1)
+    else:
+        train.set_value(i, 'Station', 2)
+
+train['Station'] = train['Station'].astype(int)
+print train['Station'].describe()
