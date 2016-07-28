@@ -8,17 +8,15 @@ from IPython.display import display
 
 # Load data
 train = pd.read_csv('../input/train.csv')
-spray = pd.read_csv('../input/spray.csv')
 weather = pd.read_csv('../input/weather.csv', na_values=['M', '-', ' '])
 
 # Get to know what's in the dataset
 display(train.head(), train.shape)
-display(spray.head(), spray.shape)
 display(weather.columns.values, weather.shape)
 
 # Data Exploration
 # Exclude redundant columns from the training data
-train_drop = ['Address', 'Block', 'Street', 'AddressNumberAndStreet', 'AddressAccuracy']
+train_drop = ['Address', 'AddressNumberAndStreet', 'AddressAccuracy']
 train = train.drop(train_drop, axis=1)
 
 # Check the statistic of the training data
@@ -84,18 +82,14 @@ plt.imshow(mapdata,
            extent=lon_lat_box, 
            aspect=aspect)
 
-#drop rows with off-the-map locations
-spray = spray[spray.Latitude < 42.2]
-spray_locations = spray[['Longitude', 'Latitude']].drop_duplicates().values
 locations = traps[['Longitude', 'Latitude']].drop_duplicates().values
 stations = np.array([[-87.933, 41.995], [-87.752, 41.786, ]])
-plt.scatter(spray_locations[:,0], spray_locations[:,1], marker='x', color = 'y')
 plt.scatter(locations[:,0], locations[:,1], marker='o')
 for i in range(2):
     plt.plot(stations[i,0], stations[i,1], '^', color='r')
 
 # Convert Date to datetime format and add Year & Month columns
-files = [train, spray, weather]
+files = [train, weather]
 for file in files:
     file['Date'] = pd.to_datetime(file['Date'], format='%Y-%m-%d')
     file['Year'] = file['Date'].dt.year
@@ -103,7 +97,7 @@ for file in files:
     file['Day'] = file['Date'].dt.day
     
 # Determine percentage of positive mosquitos per category
-groups = ['Year', 'Month', 'Species', 'Trap']
+groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
 for i in range(len(groups)):
     group = train.groupby([groups[i]])
     percent_positive_per_group = dict(group['WnvPresent'].sum() / group['WnvPresent'].count() * 100.0)
@@ -112,15 +106,6 @@ for i in range(len(groups)):
     locs, labels = plt.xticks()
     plt.setp(labels, rotation = 70)
     plt.show()
-
-# Determine spray frequency per year
-year = spray.groupby(sorted(['Year', 'Month']))
-spray_freq = dict(year['Time'].count())
-plt.bar(range(len(spray_freq)), spray_freq.values(), align = 'center')
-plt.xticks(range(len(spray_freq)), spray_freq.keys())
-locs, labels = plt.xticks()
-plt.setp(labels, rotation = 70)
-plt.show()
 
 ### Data Processing
 # Assign weather station association to the trap
