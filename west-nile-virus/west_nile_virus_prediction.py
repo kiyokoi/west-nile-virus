@@ -140,3 +140,24 @@ for i, row in train[['Latitude', 'Longitude']].iterrows():
 
 train['Station'] = train['Station'].astype(int)
 print train['Station'].describe()
+
+# Map the weather station association
+mapdata = np.loadtxt("../input/mapdata_copyright_openstreetmap_contributors.txt")
+
+aspect = mapdata.shape[0] * 1.0 / mapdata.shape[1]
+lon_lat_box = (-88, -87.5, 41.6, 42.1)
+
+plt.figure(figsize=(10,14))
+plt.imshow(mapdata, 
+           cmap=plt.get_cmap('gray'), 
+           extent=lon_lat_box, 
+           aspect=aspect)
+
+stations = np.array([[-87.933, 41.995], [-87.752, 41.786, ]])
+traps = np.array(train[['Longitude', 'Latitude', 'Station']])
+labels = traps[:,2]
+colors = 'rb'
+for i in range(2):
+    stn_asgnmt= traps[np.where(labels==i+1)]
+    plt.plot(stn_asgnmt[:,0], stn_asgnmt[:,1], 'o', color=colors[i])
+    plt.plot(stations[i,0], stations[i,1], '^', color='g', markersize=15)
