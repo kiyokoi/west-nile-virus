@@ -18,7 +18,7 @@ display(weather.columns.values, weather.shape)
 
 # Data Exploration
 # Exclude redundant columns from the training data
-train_drop = ['Address', 'Block', 'Street', 'AddressNumberAndStreet', 'AddressAccuracy']
+train_drop = ['Address', 'AddressNumberAndStreet', 'AddressAccuracy']
 train = train.drop(train_drop, axis=1)
 
 # Check the statistic of the training data
@@ -103,7 +103,7 @@ for file in files:
     file['Day'] = file['Date'].dt.day
     
 # Determine percentage of positive mosquitos per category
-groups = ['Year', 'Month', 'Species', 'Trap']
+groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
 for i in range(len(groups)):
     group = train.groupby([groups[i]])
     percent_positive_per_group = dict(group['WnvPresent'].sum() / group['WnvPresent'].count() * 100.0)
