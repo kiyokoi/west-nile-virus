@@ -108,41 +108,13 @@ for i in range(len(groups)):
     plt.show()
 
 ### Data Processing
-# Assign weather station association to the trap
-s1 = (41.995, -87.933)
-s2 = (41.786, -87.752)
+# Combined weather data by Station, then to train by Date
+weather_stn1 = weather[weather['Station']==1]
+weather_stn2 = weather[weather['Station']==2]
+weather_stn1 = weather_stn1.drop('Station', axis=1)
+weather_stn2 = weather_stn2.drop('Station', axis=1)
+weather = weather_stn1.merge(weather_stn2, on='Date')
 
-# from https://github.com/geopy/geopy
-from geopy.distance import great_circle
-for i, row in train[['Latitude', 'Longitude']].iterrows():
-    coord = (row[0], row[1])       
-    distance1 = great_circle(coord, s1).miles
-    distance2 = great_circle(coord, s2).miles
-    if distance1 < distance2:    
-        train.set_value(i, 'Station', 1)
-    else:
-        train.set_value(i, 'Station', 2)
-
-train['Station'] = train['Station'].astype(int)
-print train['Station'].describe()
-
-# Map the weather station association
-mapdata = np.loadtxt("../input/mapdata_copyright_openstreetmap_contributors.txt")
-
-aspect = mapdata.shape[0] * 1.0 / mapdata.shape[1]
-lon_lat_box = (-88, -87.5, 41.6, 42.1)
-
-plt.figure(figsize=(10,14))
-plt.imshow(mapdata, 
-           cmap=plt.get_cmap('gray'), 
-           extent=lon_lat_box, 
-           aspect=aspect)
-
-stations = np.array([[-87.933, 41.995], [-87.752, 41.786, ]])
-traps = np.array(train[['Longitude', 'Latitude', 'Station']])
-labels = traps[:,2]
-colors = 'rb'
-for i in range(2):
-    stn_asgnmt= traps[np.where(labels==i+1)]
-    plt.plot(stn_asgnmt[:,0], stn_asgnmt[:,1], 'o', color=colors[i])
-    plt.plot(stations[i,0], stations[i,1], '^', color='g', markersize=15)
+train = train.merge(weather, on='Date')
+train = train.drop(['Date'], axis=1)
+display(train.head())
