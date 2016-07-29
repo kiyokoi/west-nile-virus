@@ -127,3 +127,14 @@ lbl = LabelEncoder()
 for col in cat:
     lbl.fit(list(train[col].values))
     train[col] = lbl.transform(train[col].values)
+
+# Visualize and check data
+grid = sns.FacetGrid(train, col='Month_x', row='Species', hue='WnvPresent')
+grid = grid.map(plt.hist, 'NumMosquitos')
+
+# Identify features and labels
+target_col = 'WnvPresent'
+x_all = train.drop([target_col], axis=1)
+y_all = train[target_col]
+features = x_all.values
+labels = y_all.values
