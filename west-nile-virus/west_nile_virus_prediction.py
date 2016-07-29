@@ -55,7 +55,7 @@ weather_impute = ['Tavg', 'WetBulb', 'Heat', 'Cool', 'PrecipTotal', 'StnPressure
 display(weather[weather_impute].describe())
 for col in weather_impute:
     median = weather[col].median()
-    weather.loc[weather[col].isnull()] = median
+    weather[col].loc[weather[col].isnull()] = median
     
 # Data statistics after imputation
 display(weather[weather_impute].describe())
