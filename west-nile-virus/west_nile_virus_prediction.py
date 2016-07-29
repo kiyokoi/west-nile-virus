@@ -44,11 +44,6 @@ print 1472 - weather.groupby('Station').count()
 weather_drop = ['Water1', 'CodeSum']
 weather = weather.drop(weather_drop, axis=1)
 
-# Impute Station2 data with Station1 data for sunrise & sunset
-weather_ffill = ['Sunrise', 'Sunset', 'Depart', 'SnowFall', 'Depth']
-for column in weather_ffill:
-    weather[column].fillna(method='ffill', inplace=True)
-
 # Impute 'T' (trace) precipitation with zero
 weather.replace('  T', 0.0, inplace=True)
 # Convert PrecipTotal to real number
@@ -120,7 +115,7 @@ weather_stn2 = weather_stn2.drop('Station', axis=1)
 weather = weather_stn1.merge(weather_stn2, on='Date')
 
 train = train.merge(weather, on='Date')
-train = train.drop(['Date'], axis=1)
+train = train.drop(['Date', 'Sunrise_y', 'Sunset_y', 'Depart_y', 'SnowFall_y', 'Depth_y', 'Year_y', 'Month_y', 'Day_y'], axis=1)
 display(train.head())
 
 # Convert categorical data into numerical
