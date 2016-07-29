@@ -8,6 +8,8 @@ from IPython.display import display
 
 from sklearn.preprocessing import LabelEncoder
 
+pd.set_option('display.max_columns', 50)
+
 # Load data
 train = pd.read_csv('../input/train.csv')
 weather = pd.read_csv('../input/weather.csv', na_values=['M', '-', ' '])
@@ -17,13 +19,13 @@ display(train.head(), train.shape)
 display(weather.columns.values, weather.shape)
 
 # Data Exploration
-# Exclude redundant columns from the training data
-train_drop = ['Address', 'AddressNumberAndStreet', 'AddressAccuracy']
-train = train.drop(train_drop, axis=1)
-
 # Check the statistic of the training data
 display(train.describe())
 display(train.Species.unique())
+
+# Exclude redundant columns from the training data
+train_drop = ['Address', 'AddressNumberAndStreet', 'AddressAccuracy']
+train = train.drop(train_drop, axis=1)
 
 # Check data types
 display(train.dtypes)
@@ -39,11 +41,11 @@ for column in weather.columns:
 print 1472 - weather.groupby('Station').count()
 
 # Drop columns with high count of missing data in both stations and unimputable Station2 data
-weather_drop = ['Water1', 'CodeSum', 'Depart', 'SnowFall', 'Depth']
+weather_drop = ['Water1', 'CodeSum']
 weather = weather.drop(weather_drop, axis=1)
 
 # Impute Station2 data with Station1 data for sunrise & sunset
-weather_ffill = ['Sunrise', 'Sunset']
+weather_ffill = ['Sunrise', 'Sunset', 'Depart', 'SnowFall', 'Depth']
 for column in weather_ffill:
     weather[column].fillna(method='ffill', inplace=True)
 
