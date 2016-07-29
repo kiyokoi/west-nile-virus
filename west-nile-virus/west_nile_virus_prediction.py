@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from IPython.display import display
 
+from sklearn.preprocessing import LabelEncoder
+
 # Load data
 train = pd.read_csv('../input/train.csv')
 weather = pd.read_csv('../input/weather.csv', na_values=['M', '-', ' '])
@@ -118,3 +120,10 @@ weather = weather_stn1.merge(weather_stn2, on='Date')
 train = train.merge(weather, on='Date')
 train = train.drop(['Date'], axis=1)
 display(train.head())
+
+# Convert categorical data into numerical
+cat = ['Species', 'Street', 'Trap']
+lbl = LabelEncoder()
+for col in cat:
+    lbl.fit(list(train[col].values))
+    train[col] = lbl.transform(train[col].values)
