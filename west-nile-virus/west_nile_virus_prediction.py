@@ -81,11 +81,13 @@ plt.imshow(mapdata,
            extent=lon_lat_box, 
            aspect=aspect)
 
-locations = traps[['Longitude', 'Latitude']].drop_duplicates().values
+plt.scatter(train['Longitude'],train['Latitude'], s=train['NumMosquitos']*2, edgecolors='b', facecolors='None')
 stations = np.array([[-87.933, 41.995], [-87.752, 41.786, ]])
-plt.scatter(locations[:,0], locations[:,1], marker='o')
 for i in range(2):
     plt.plot(stations[i,0], stations[i,1], '^', color='r')
+plt.xlim([-88, -87.5])
+plt.ylim([41.6, 42.1])
+plt.savefig('map.png')
 
 # Convert Date to datetime format and add Year & Month columns
 files = [train, weather]
