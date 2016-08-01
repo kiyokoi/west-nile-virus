@@ -12,6 +12,8 @@ from sklearn.cross_validation import cross_val_score, ShuffleSplit, train_test_s
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.cross_validation import ShuffleSplit
+from sklearn.learning_curve import learning_curve
 
 pd.set_option('display.max_columns', 50)
 
@@ -157,3 +159,27 @@ for i in range(len(names)):
 for name, clf in clf_dict.iteritems():   
     score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
     print '{} score: {:.2f}'.format(name, score.mean())
+
+# Generate Learning Curve (Training size vs Score)
+cv = ShuffleSplit(features.shape[0], n_iter = 10, random_state = 0)
+train_sizes = np.linspace(0.1, 1.0, 10)
+
+clf = GaussianNB()
+sizes, train_scores, test_scores = learning_curve(clf, features, labels, train_sizes = train_sizes, cv=cv, scoring=scorer)
+
+train_scores_mean = np.mean(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+train_scores_std = np.std(train_scores, axis=1)
+test_scores_std = np.std(test_scores, axis=1)
+
+plt.title('Algorithm: Gaussian Naive Bayes')
+plt.xlabel('Training examples')
+plt.ylabel('Score')
+plt.plot(sizes, train_scores_mean, 'o-', color="r", label="Training score")
+plt.plot(sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+plt.fill_between(sizes, train_scores_mean - train_scores_std, \
+                     train_scores_mean + train_scores_std, alpha=0.1, \
+                     color="r")
+plt.fill_between(sizes, test_scores_mean - test_scores_std, \
+                     test_scores_mean + test_scores_std, alpha=0.1, color="g")
+plt.legend(loc='best')
