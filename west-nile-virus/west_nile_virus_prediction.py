@@ -29,7 +29,6 @@ train = train.drop(train_drop, axis=1)
 
 # Check data types
 display(train.dtypes)
-display(spray.dtypes)
 display(weather.dtypes)
 
 # Tidy up the weather data
@@ -97,6 +96,11 @@ for file in files:
     file['Month'] = file['Date'].dt.month
     file['Day'] = file['Date'].dt.day
     
+# Visualize weather data
+var = ['Tavg', 'DewPoint', 'PrecipTotal', 'StnPressure', 'Month', 'Station']
+sns.pairplot(weather[var], hue='Station')
+plt.savefig('pairplot.png')
+
 # Determine percentage of positive mosquitos per category
 groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
 for i in range(len(groups)):
