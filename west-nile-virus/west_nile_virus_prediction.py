@@ -7,6 +7,11 @@ import seaborn as sns
 from IPython.display import display
 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import roc_auc_score, make_scorer
+from sklearn.cross_validation import cross_val_score, ShuffleSplit, train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 pd.set_option('display.max_columns', 50)
 
@@ -131,13 +136,24 @@ for col in cat:
     lbl.fit(list(train[col].values))
     train[col] = lbl.transform(train[col].values)
 
-# Visualize and check data
-grid = sns.FacetGrid(train, col='Month_x', row='Species', hue='WnvPresent')
-grid = grid.map(plt.hist, 'NumMosquitos')
-
 # Identify features and labels
 target_col = 'WnvPresent'
 x_all = train.drop([target_col], axis=1)
 y_all = train[target_col]
 features = x_all.values
 labels = y_all.values
+
+# Model Application
+names = ['GaussianNB', 'Decision Tree', 'Random Forest']
+alg = [GaussianNB(), DecisionTreeClassifier(), RandomForestClassifier()]
+
+cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
+scorer = make_scorer(roc_auc_score)
+
+clf_dict = {}
+for i in range(len(names)):
+    clf_dict[names[i]] = alg[i]
+
+for name, clf in clf_dict.iteritems():   
+    score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
+    print '{} score: {:.2f}'.format(name, score.mean())
