@@ -13,13 +13,8 @@ warnings.filterwarnings("ignore", category = UserWarning, module = "matplotlib")
 ###########################################
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import cross_validation
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
-from sklearn.datasets import load_digits
 from sklearn.learning_curve import learning_curve
 
-import sklearn.learning_curve as curves
 from sklearn.cross_validation import ShuffleSplit
 from sklearn.metrics import roc_auc_score, make_scorer
 
