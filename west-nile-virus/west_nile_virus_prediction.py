@@ -140,25 +140,6 @@ for name, clf in clf_dict.iteritems():
     print '{} score: {:.2f}'.format(name, score.mean())
 
 # Generate Learning Curve (Training size vs Score)
-cv = ShuffleSplit(features.shape[0], n_iter = 10, random_state = 0)
-train_sizes = np.linspace(0.1, 1.0, 10)
-
 clf = GaussianNB()
-sizes, train_scores, test_scores = learning_curve(clf, features, labels, train_sizes = train_sizes, cv=cv, scoring=scorer)
-
-train_scores_mean = np.mean(train_scores, axis=1)
-test_scores_mean = np.mean(test_scores, axis=1)
-train_scores_std = np.std(train_scores, axis=1)
-test_scores_std = np.std(test_scores, axis=1)
-
-plt.title('Algorithm: Gaussian Naive Bayes')
-plt.xlabel('Training examples')
-plt.ylabel('Score')
-plt.plot(sizes, train_scores_mean, 'o-', color="r", label="Training score")
-plt.plot(sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
-plt.fill_between(sizes, train_scores_mean - train_scores_std, \
-                     train_scores_mean + train_scores_std, alpha=0.1, \
-                     color="r")
-plt.fill_between(sizes, test_scores_mean - test_scores_std, \
-                     test_scores_mean + test_scores_std, alpha=0.1, color="g")
-plt.legend(loc='best')
+cl.LearningCurve(clf, features, labels)
+plt.savefig('learning_curve_nb.png')
