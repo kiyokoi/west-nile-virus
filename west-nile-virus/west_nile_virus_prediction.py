@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import callables as cl
 from IPython.display import display
 
 from sklearn.preprocessing import LabelEncoder
@@ -74,26 +75,7 @@ for column in weather.columns:
 display(weather.head())
 
 # Visualize locations on the map
-# Modified from Kaggle starter code
-mapdata = np.loadtxt("../input/mapdata_copyright_openstreetmap_contributors.txt")
-traps = pd.read_csv('../input/train.csv')[['Date', 'Trap','Longitude', 'Latitude', 'WnvPresent']]
-
-aspect = mapdata.shape[0] * 1.0 / mapdata.shape[1]
-lon_lat_box = (-88, -87.5, 41.6, 42.1)
-
-plt.figure(figsize=(10,14))
-plt.imshow(mapdata, 
-           cmap=plt.get_cmap('gray'), 
-           extent=lon_lat_box, 
-           aspect=aspect)
-
-plt.scatter(train['Longitude'],train['Latitude'], s=train['NumMosquitos']*2, edgecolors='b', facecolors='None')
-stations = np.array([[-87.933, 41.995], [-87.752, 41.786, ]])
-for i in range(2):
-    plt.plot(stations[i,0], stations[i,1], '^', color='r')
-plt.xlim([-88, -87.5])
-plt.ylim([41.6, 42.1])
-plt.savefig('map.png')
+cl.Map(train)
 
 # Convert Date to datetime format and add Year & Month columns
 files = [train, weather]
