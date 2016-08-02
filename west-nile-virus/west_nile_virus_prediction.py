@@ -91,15 +91,12 @@ sns.pairplot(weather[var], hue='Station')
 plt.savefig('pairplot.png')
 
 # Determine percentage of positive mosquitos per category
+fig = plt.figure(figsize=(12,8))
 groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
-for i in range(len(groups)):
-    group = train.groupby([groups[i]])
-    percent_positive_per_group = dict(group['WnvPresent'].sum() / group['WnvPresent'].count() * 100.0)
-    plt.bar(range(len(percent_positive_per_group)), percent_positive_per_group.values(), align = 'center')
-    plt.xticks(range(len(percent_positive_per_group)), percent_positive_per_group.keys())
-    locs, labels = plt.xticks()
-    plt.setp(labels, rotation = 70)
-    plt.show()
+cl.PercPos(fig, train, groups)
+fig.tight_layout()
+fig.show()
+plt.savefig('histograms.png')
 
 ### Data Processing
 # Combined weather data by Station, then to train by Date
