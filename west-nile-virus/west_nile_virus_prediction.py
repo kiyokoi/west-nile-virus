@@ -142,4 +142,33 @@ for name, clf in clf_dict.iteritems():
 # Generate Learning Curve (Training size vs Score)
 clf = GaussianNB()
 cl.LearningCurve(clf, features, labels)
+plt.suptitle('Learning Curve for Gaussian Naive Bayes', size=14)
 plt.savefig('../working/learning_curve_nb.png')
+
+# Learning curve for Decision Tree Classifier & Random Forest
+fig = plt.figure(figsize=(10,7))
+max_depth = [5, 10, 15, 20]
+for k, depth in enumerate(max_depth):
+    clf = DecisionTreeClassifier(max_depth = depth)
+    fig.add_subplot(2, 2, k+1)
+    plt.title('max_depth = %s'%(depth))
+    cl.LearningCurve(clf, features, labels)
+fig.tight_layout()
+fig.subplots_adjust(top=0.90)
+fig.show()
+plt.suptitle('Learning Curve for Decision Tree Classifier', size=14)
+plt.savefig('../working/learning_curve_dt.png')
+
+# Learning curve for Random Forest Classifier
+fig = plt.figure(figsize=(10,7))
+max_depth = [5, 10, 15, 20]
+for k, depth in enumerate(max_depth):
+    clf = RandomForestClassifier(max_depth = depth)
+    fig.add_subplot(2, 2, k+1)
+    plt.title('max_depth = %s'%(depth))
+    cl.LearningCurve(clf, features, labels)
+fig.tight_layout()
+fig.subplots_adjust(top=0.90)
+fig.show()
+plt.suptitle('Learning Curve for Random Forest Classifier', size=14)
+plt.savefig('../working/learning_curve_rf.png')
