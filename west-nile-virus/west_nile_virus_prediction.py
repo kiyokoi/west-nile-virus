@@ -88,7 +88,7 @@ for file in files:
 # Visualize weather data
 var = ['Tavg', 'DewPoint', 'PrecipTotal', 'StnPressure', 'Month', 'Station']
 sns.pairplot(weather[var], hue='Station')
-plt.savefig('pairplot.png')
+plt.savefig('../working/pairplot.png')
 
 # Determine percentage of positive mosquitos per category
 fig = plt.figure(figsize=(12,8))
@@ -96,7 +96,7 @@ groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
 cl.PercPos(fig, train, groups)
 fig.tight_layout()
 fig.show()
-plt.savefig('histograms.png')
+plt.savefig('../working/histograms.png')
 
 ### Data Processing
 # Combined weather data by Station, then to train by Date
@@ -142,4 +142,4 @@ for name, clf in clf_dict.iteritems():
 # Generate Learning Curve (Training size vs Score)
 clf = GaussianNB()
 cl.LearningCurve(clf, features, labels)
-plt.savefig('learning_curve_nb.png')
+plt.savefig('../working/learning_curve_nb.png')
