@@ -38,7 +38,7 @@ def Map(df):
         plt.plot(stations[i,0], stations[i,1], '^', color='r')
     plt.xlim([-88, -87.5])
     plt.ylim([41.6, 42.1])
-    plt.savefig('map.png')
+    plt.savefig('../working/map.png')
 
 # plot learning curves
 def LearningCurve(clf, features, labels):
