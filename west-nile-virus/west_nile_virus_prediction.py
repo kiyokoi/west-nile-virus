@@ -211,3 +211,19 @@ scorer = make_scorer(roc_auc_score)
 score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
 print 'Avg Score: {:.2f}'.format(score.mean())
 
+# Verify results. Check for overfitting (score dependency on the training/testing subsets) and repeatability.
+# check for overfitting (score dependency on the training/testing subsets)
+clf = GaussianNB()
+model_accuracies = []
+for repetition in range(100):
+    (features_train, features_test, labels_train, labels_test) = train_test_split(features, labels, train_size=0.6)
+    clf.fit(features_train, labels_train)
+    pred = clf.predict(features_test)
+    score = roc_auc_score(labels_test, pred)
+    model_accuracies.append(score)
+
+sns.distplot(model_accuracies)
+plt.title('Histogram of Performance over 100 runs', size=14)
+plt.xlabel('Score')
+plt.ylabel('Count')
+plt.savefig('../working/model_accuracy.png')
