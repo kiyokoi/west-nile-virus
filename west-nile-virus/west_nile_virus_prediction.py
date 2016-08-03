@@ -249,3 +249,15 @@ plt.ylabel('True Positive Rate')
 plt.title('ROC curve for cross-validation data', size=14)
 plt.savefig('../working/roc_curve.png')
 
+# Compare the model against Kaggle benchmark
+data = pd.read_csv('../input/predict-west-nile-virus_public_leaderboard.csv')
+
+teams = data.groupby(['TeamName'])
+max_scores = teams['Score'].max()
+
+display(max_scores.describe())
+sns.distplot(max_scores, label='Leaderboard Scores')
+sns.distplot(model_accuracies, label='Scores from 100 runs')
+plt.title('Model performance against Kaggle Leaderboard', size=14)
+plt.legend()
+plt.savefig('../working/leaderboard.png')
