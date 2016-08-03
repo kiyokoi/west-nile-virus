@@ -18,6 +18,7 @@ from sklearn.learning_curve import learning_curve
 from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import SelectKBest
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import roc_curve, auc
 
 pd.set_option('display.max_columns', 50)
 
@@ -227,3 +228,24 @@ plt.title('Histogram of Performance over 100 runs', size=14)
 plt.xlabel('Score')
 plt.ylabel('Count')
 plt.savefig('../working/model_accuracy.png')
+
+# Visualize ROC curve
+clf = GaussianNB()
+clf.fit(features_train, labels_train)
+pred = clf.predict_proba(features_test)[:,1]
+
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+for i in range(2):
+    fpr[i], tpr[i], _ = roc_curve(labels_test, pred)
+    roc_auc[i] = auc(fpr[i], tpr[i])
+    
+plt.figure()
+plt.plot(fpr[1], tpr[1])
+plt.plot([0,1], [0,1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC curve for cross-validation data', size=14)
+plt.savefig('../working/roc_curve.png')
+
