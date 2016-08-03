@@ -196,3 +196,18 @@ plt.title('Feature Size Effect on Performance', size=14)
 plt.xlabel('Feature size')
 plt.ylabel('Avg Score')
 plt.savefig('../working/gridsearch.png')
+
+# The final model
+# Select 25 best features
+display(features.shape)
+select = SelectKBest(k=25)
+features = select.fit_transform(features, labels)
+display(features.shape)
+
+# Model with 25 features
+alg = GaussianNB()
+cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.4, random_state = 0)
+scorer = make_scorer(roc_auc_score)
+score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
+print 'Avg Score: {:.2f}'.format(score.mean())
+
