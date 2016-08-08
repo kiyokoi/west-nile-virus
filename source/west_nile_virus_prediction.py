@@ -1,7 +1,9 @@
-# Code is borrowed from this script: https://www.kaggle.com/users/213536/vasco/predict-west-nile-virus/west-nile-heatmap
+### Capstone Project
+### Machine Learning Engineer Nanodegree
+### West Nile Virus Prediction main code
+### Kiyoko Ikeuchi   Auguest, 2016
 
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import callables as cl
@@ -13,8 +15,6 @@ from sklearn.cross_validation import cross_val_score, ShuffleSplit, train_test_s
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.cross_validation import ShuffleSplit
-from sklearn.learning_curve import learning_curve
 from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import SelectKBest
 from sklearn.pipeline import Pipeline
@@ -30,7 +30,7 @@ weather = pd.read_csv('../input/weather.csv', na_values=['M', '-', ' '])
 display(train.head(), train.shape)
 display(weather.columns.values, weather.shape)
 
-# Data Exploration
+### Data Exploration
 # Check the statistic of the training data
 display(train.describe())
 display(train.Species.unique())
@@ -43,7 +43,7 @@ train = train.drop(train_drop, axis=1)
 display(train.dtypes)
 display(weather.dtypes)
 
-# Tidy up the weather data
+### Weather data missing data
 # Count the number of missing data by column
 for column in weather.columns:
     print column, weather[column].isnull().values.sum()
@@ -78,9 +78,6 @@ for column in weather.columns:
 # First 5 rows of the final weather data
 display(weather.head())
 
-# Visualize locations on the map
-cl.Map(train)
-
 # Convert Date to datetime format and add Year & Month columns
 files = [train, weather]
 for file in files:
@@ -89,12 +86,16 @@ for file in files:
     file['Month'] = file['Date'].dt.month
     file['Day'] = file['Date'].dt.day
     
+### Visualizations
+# Visualize locations on the map
+cl.Map(train)
+
 # Visualize weather data
 var = ['Tavg', 'DewPoint', 'PrecipTotal', 'StnPressure', 'Month', 'Station']
 sns.pairplot(weather[var], hue='Station')
 plt.savefig('../working/pairplot.png')
 
-# Determine percentage of positive mosquitos per category
+# Visualizing virus presence trend
 fig = plt.figure(figsize=(12,8))
 groups = ['Year', 'Month', 'Species', 'Trap', 'Block']
 cl.PercPos(fig, train, groups)
@@ -114,7 +115,7 @@ train = train.merge(weather, on='Date')
 train = train.drop(['Date', 'Sunrise_y', 'Sunset_y', 'Depart_y', 'SnowFall_y', 'Depth_y', 'Year_y', 'Month_y', 'Day_y'], axis=1)
 display(train.head())
 
-# Convert categorical data into numerical
+# Process categorical features
 cat = ['Species', 'Street', 'Trap']
 lbl = LabelEncoder()
 for col in cat:
@@ -128,7 +129,7 @@ y_all = train[target_col]
 features = x_all.values
 labels = y_all.values
 
-# Model Application
+### Model Application
 names = ['GaussianNB', 'Decision Tree', 'Random Forest']
 alg = [GaussianNB(), DecisionTreeClassifier(), RandomForestClassifier()]
 
@@ -143,13 +144,14 @@ for name, clf in clf_dict.iteritems():
     score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
     print '{} score: {:.2f}'.format(name, score.mean())
 
-# Generate Learning Curve (Training size vs Score)
+### Analyzing model performance
+# Learning Curve for Gaussian Naive Bayes
 clf = GaussianNB()
 cl.LearningCurve(clf, features, labels)
 plt.suptitle('Learning Curve for Gaussian Naive Bayes', size=14)
 plt.savefig('../working/learning_curve_nb.png')
 
-# Learning curve for Decision Tree Classifier & Random Forest
+# Learning curve for Decision Tree Classifier
 fig = plt.figure(figsize=(10,7))
 max_depth = [5, 10, 15, 20]
 for k, depth in enumerate(max_depth):
