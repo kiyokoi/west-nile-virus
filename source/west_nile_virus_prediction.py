@@ -134,14 +134,13 @@ names = ['GaussianNB', 'Decision Tree', 'Random Forest']
 alg = [GaussianNB(), DecisionTreeClassifier(), RandomForestClassifier()]
 
 cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
-scorer = make_scorer(roc_auc_score)
 
 clf_dict = {}
 for i in range(len(names)):
     clf_dict[names[i]] = alg[i]
 
 for name, clf in clf_dict.iteritems():   
-    score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
+    score = cross_val_score(clf, features, labels, cv=cv, scoring='roc_auc')
     print '{} score: {:.2f}'.format(name, score.mean())
 
 ### Analyzing model performance
