@@ -134,14 +134,13 @@ names = ['GaussianNB', 'Decision Tree', 'Random Forest']
 alg = [GaussianNB(), DecisionTreeClassifier(), RandomForestClassifier()]
 
 cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
-scorer = make_scorer(roc_auc_score)
 
 clf_dict = {}
 for i in range(len(names)):
     clf_dict[names[i]] = alg[i]
 
 for name, clf in clf_dict.iteritems():   
-    score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
+    score = cross_val_score(clf, features, labels, cv=cv, scoring='roc_auc')
     print '{} score: {:.2f}'.format(name, score.mean())
 
 ### Analyzing model performance
@@ -153,7 +152,7 @@ plt.savefig('../working/learning_curve_nb.png')
 
 # Learning curve for Decision Tree Classifier
 fig = plt.figure(figsize=(10,7))
-max_depth = [5, 10, 15, 20]
+max_depth = [2, 4, 6, 8]
 for k, depth in enumerate(max_depth):
     clf = DecisionTreeClassifier(max_depth = depth)
     fig.add_subplot(2, 2, k+1)
@@ -167,7 +166,7 @@ plt.savefig('../working/learning_curve_dt.png')
 
 # Learning curve for Random Forest Classifier
 fig = plt.figure(figsize=(10,7))
-max_depth = [5, 10, 15, 20]
+max_depth = [2, 4, 6, 8]
 for k, depth in enumerate(max_depth):
     clf = RandomForestClassifier(max_depth = depth)
     fig.add_subplot(2, 2, k+1)

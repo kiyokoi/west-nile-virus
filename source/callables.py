@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from sklearn.learning_curve import learning_curve
 
 from sklearn.cross_validation import ShuffleSplit
-from sklearn.metrics import roc_auc_score, make_scorer
+from sklearn.metrics import roc_auc_score
 
 
 # Map locations on the map of Chicago
@@ -44,9 +44,8 @@ def Map(df):
 def LearningCurve(clf, features, labels):
     cv = ShuffleSplit(features.shape[0], n_iter = 10, random_state = 0)
     train_sizes = np.linspace(0.1, 1.0, 10)
-    scorer = make_scorer(roc_auc_score)
-    
-    sizes, train_scores, test_scores = learning_curve(clf, features, labels, train_sizes = train_sizes, cv=cv, scoring=scorer)
+
+    sizes, train_scores, test_scores = learning_curve(clf, features, labels, train_sizes = train_sizes, cv=cv, scoring='roc_auc')
 
     train_scores_mean = np.mean(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)
