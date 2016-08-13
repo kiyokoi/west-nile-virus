@@ -198,10 +198,8 @@ features = select.fit_transform(features, labels)
 display(features.shape)
 
 # Model with 25 features
-alg = GaussianNB()
-cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.4, random_state = 0)
-scorer = make_scorer(roc_auc_score)
-score = cross_val_score(clf, features, labels, cv=cv, scoring=scorer)
+clf = RandomForestClassifier(max_depth=6, min_samples_split=6)
+score = cross_val_score(clf, features, labels, cv=cv, scoring='roc_auc')
 print 'Avg Score: {:.2f}'.format(score.mean())
 
 # Verify results. Check for overfitting (score dependency on the training/testing subsets) and repeatability.
