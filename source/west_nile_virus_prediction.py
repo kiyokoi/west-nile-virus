@@ -10,7 +10,7 @@ import callables as cl
 from IPython.display import display
 
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import roc_auc_score, make_scorer
+from sklearn.metrics import roc_auc_score
 from sklearn.cross_validation import cross_val_score, ShuffleSplit, train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -179,25 +179,16 @@ plt.suptitle('Learning Curve for Random Forest Classifier', size=14)
 plt.savefig('../working/learning_curve_rf.png')
 
 # Model refinement with Gridsearch
-cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
-clf = GaussianNB()
+cv = ShuffleSplit(features.shape[0], n_iter = 10, test_size = 0.3, random_state = 0)
+clf = RandomForestClassifier()
 select = SelectKBest()
-steps = [('feature_selection', select), ('nb', clf)]
-parameters = dict(feature_selection__k=[5,10,15,20,25,30,35,'all'])
+steps = [('feature_selection', select), ('rf', clf)]
+parameters = dict(feature_selection__k=[5,15,25,35,'all'], rf__max_depth=[4,6,8], rf__min_samples_split=[2, 4, 6, 8])
 pipeline = Pipeline(steps)
-grid_search = GridSearchCV(pipeline, param_grid=parameters, cv=cv, scoring=scorer)
+grid_search = GridSearchCV(pipeline, param_grid=parameters, cv=cv, scoring='roc_auc')
 grid_search.fit(features, labels)
 print 'Best score: {}'.format(grid_search.best_score_)
 print 'best parameters: {}'.format(grid_search.best_params_)
-
-# plot feature size vs score
-scores = [x[1] for x in grid_search.grid_scores_]
-feature_sizes = [5,10,15,20,25,30,35,44]
-plt.plot(feature_sizes, scores, 'o-')
-plt.title('Feature Size Effect on Performance', size=14)
-plt.xlabel('Feature size')
-plt.ylabel('Avg Score')
-plt.savefig('../working/gridsearch.png')
 
 # The final model
 # Select 25 best features
