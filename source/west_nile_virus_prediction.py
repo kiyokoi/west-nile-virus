@@ -204,12 +204,11 @@ print 'Avg Score: {:.2f}'.format(score.mean())
 
 # Verify results. Check for overfitting (score dependency on the training/testing subsets) and repeatability.
 # check for overfitting (score dependency on the training/testing subsets)
-clf = GaussianNB()
 model_accuracies = []
 for repetition in range(100):
-    (features_train, features_test, labels_train, labels_test) = train_test_split(features, labels, train_size=0.6)
+    (features_train, features_test, labels_train, labels_test) = train_test_split(features, labels, train_size=0.7)
     clf.fit(features_train, labels_train)
-    pred = clf.predict(features_test)
+    pred = clf.predict_proba(features_test)[:,1]
     score = roc_auc_score(labels_test, pred)
     model_accuracies.append(score)
 
