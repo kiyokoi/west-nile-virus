@@ -219,7 +219,6 @@ plt.ylabel('Count')
 plt.savefig('../working/model_accuracy.png')
 
 # Visualize ROC curve
-clf = GaussianNB()
 clf.fit(features_train, labels_train)
 pred = clf.predict_proba(features_test)[:,1]
 
